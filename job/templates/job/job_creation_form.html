@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white shadow-xl rounded-lg overflow-hidden border border-gray-100">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-5">
+        <h1 class="text-2xl font-bold text-white flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Create New Job
+        </h1>
+        <p class="text-indigo-100 mt-1">Fill out the form below to post your job opportunity</p>
+      </div>
+      
+      <!-- Form -->
+      <div class="px-6 py-8">
+        <form method="post" class="space-y-8">
+          {% csrf_token %}
+          
+          <!-- Job Basics Section -->
+          <div class="space-y-6">
+            
+            <!-- Job Title -->
+            <div>
+              <label for="{{ form.job_title.id_for_label }}" class="block text-sm font-medium text-gray-700">Job Title *</label>
+              <div class="mt-1">
+                {{ form.job_title }}
+              </div>
+            </div>
+            
+            <!-- Job Description -->
+            <div>
+              <label for="{{ form.job_description.id_for_label }}" class="block text-sm font-medium text-gray-700">Job Description *</label>
+              <div class="mt-1">
+                <textarea name="{{ form.job_description.name }}" id="{{ form.job_description.id_for_label }}" class="form-textarea mt-1 block w-full" rows="4">{{ form.job_description.value|default:'' }}</textarea>
+              </div>
+              <p class="mt-1 text-xs text-gray-500">Provide a detailed description of the job requirements and responsibilities</p>
+            </div>
+            
+            <!-- Category & Experience Level - Two Column Layout -->
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <!-- Category (ForeignKey) -->
+              <div>
+                <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700">Category *</label>
+                <div class="mt-1">
+                  <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" class="form-select block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50">
+                    {% for choice in form.category.field.choices %}
+                      <option value="{{ choice.0 }}" {% if choice.0 == form.category.value %}selected{% endif %}>{{ choice.1 }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Experience Level (ForeignKey) -->
+              <div>
+                <label for="{{ form.experience.id_for_label }}" class="block text-sm font-medium text-gray-700">Experience Level *</label>
+                <div class="mt-1">
+                  {{ form.experience }}
+                </div>
+              </div>
+            </div>
+            
+            <!-- Location -->
+            <div>
+              <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-gray-700">Location</label>
+              <div class="mt-1">
+                {{ form.location }}
+              </div>
+              <p class="mt-1 text-xs text-gray-500">Leave blank for remote jobs</p>
+            </div>
+          </div>
+          
+          <!-- Requirements Section -->
+          <div class="space-y-6 pt-4">
+            <h2 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Skills & Requirements</h2>
+            
+            <!-- Required Skills (ManyToMany) - Improved Checkboxes -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-3">Required Skills (select all that apply) *</label>
+              <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 max-h-60 overflow-y-auto p-3 bg-gray-50 rounded-md">
+                {% for value, text in form.required_skills.field.choices %}
+                <div class="relative flex items-start hover:bg-gray-100 p-2 rounded-md transition duration-150">
+                  <div class="flex items-center h-5">
+                    <input id="id_required_skills_{{ forloop.counter0 }}" name="required_skills" type="checkbox" value="{{ value }}"
+                           {% if value in form.required_skills.value|default:'' %}checked{% endif %}
+                           class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="id_required_skills_{{ forloop.counter0 }}" class="font-medium text-gray-700 cursor-pointer">{{ text }}</label>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Budget & Timeline Section -->
+          <div class="space-y-6 pt-4">
+            <h2 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2">Budget & Timeline</h2>
+            
+            <!-- Budget Range -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Budget Range ($) *</label>
+              <div class="grid grid-cols-1 gap-4 mt-2 sm:grid-cols-2 items-center">
+                <div class="relative rounded-md shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="text-gray-500 sm:text-sm">$</span>
+                  </div>
+                  <input type="number" name="{{ form.min_price.name }}" id="{{ form.min_price.id_for_label }}" class="form-input pl-7 pr-12 w-full" value="{{ form.min_price.value|default:'' }}">
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span class="text-xs text-gray-400">Min</span>
+                  </div>
+                </div>
+                <div class="relative rounded-md shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="text-gray-500 sm:text-sm">$</span>
+                  </div>
+                  <input type="number" name="{{ form.max_price.name }}" id="{{ form.max_price.id_for_label }}" class="form-input pl-7 pr-12 w-full" value="{{ form.max_price.value|default:'' }}">
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span class="text-xs text-gray-400">Max</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Timeline -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Timeline (hours) *</label>
+              <div class="grid grid-cols-1 gap-4 mt-2 sm:grid-cols-2 items-center">
+                <div class="relative rounded-md shadow-sm">
+                  <input type="number" name="{{ form.min_time.name }}" id="{{ form.min_time.id_for_label }}" class="form-input pl-7 pr-12 w-full" value="{{ form.min_time.value|default:'' }}">
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span class="text-xs text-gray-400">Min</span>
+                  </div>
+                </div>
+                <div class="relative rounded-md shadow-sm">
+                  <input type="number" name="{{ form.max_time.name }}" id="{{ form.max_time.id_for_label }}" class="form-input pl-7 pr-12 w-full" value="{{ form.max_time.value|default:'' }}">
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <span class="text-xs text-gray-400">Max</span>
+                  </div>
+                </div>
+              </div>
+              <p class="mt-1 text-xs text-gray-500">Estimated time needed to complete the job</p>
+            </div>
+          </div>
+          
+          <!-- Submit Button -->
+          <div class="pt-6">
+            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Create Job
+            </button>
+            <p class="mt-2 text-xs text-center text-gray-500">* Required fields</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

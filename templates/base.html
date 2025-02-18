@@ -1,0 +1,77 @@
+{% load static tailwind_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}swiftJob{% endblock title %}
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {% tailwind_css %}
+</head>
+<body class="font-['Poppins',sans-serif] bg-gradient-to-r from-indigo-700 to-indigo-900 min-h-screen">
+
+<header class="text-white">
+    <nav class="flex justify-between py-3 px-5 md:px-[50px] max-w-screen-xl mx-auto w-full">
+        <a href="{% if request.user.is_authenticated and request.user.profile.role == 'job_creator' %} {% url "job:job-creator" %} {% elif request.user.is_authenticated and request.user.profile.role == 'job_seeker'  %}{% url "job:job-seeker" %} {% else %} / {% endif %}" class="text-2xl font-bold md:text-3xl">swiftJob</a>
+        {% if request.user.is_authenticated %}
+        <div class="flex gap-4 items-center cursor-pointer relative">
+            {% if request.user.profile.role == 'job_creator' %}
+            <a href="{% url "job:job-creation-form" %}" class="absolute md:static -bottom-10 bg-black md:font-medium md:text-lg md:hover:text-gray-400 md:transition-all duration-300 ease-in-out  md:bg-transparent py-2 px-5 md:p-0 w-full md:w-fit  rounded-tl-lg rounded-tr-lg hidden md:block" id="logout-btn">Create Job</a>
+            <a href="{% url "application:applications" %}" class="absolute md:static -bottom-10 bg-black md:font-medium md:text-lg md:hover:text-gray-400 md:transition-all duration-300 ease-in-out  md:bg-transparent py-2 px-5 md:p-0 w-full md:w-fit  rounded-tl-lg rounded-tr-lg hidden md:block" id="logout-btn">Applications</a>
+            {% elif request.user.profile.role == 'job_seeker' %}
+            <a href="{% url "job:avialable-jobs" %}" class="absolute whitespace-nowrap md:static -bottom-10 bg-black md:font-medium md:text-lg md:hover:text-gray-400 md:transition-all duration-300 ease-in-out  md:bg-transparent py-2 px-5 md:p-0 w-full md:w-fit  rounded-tl-lg rounded-tr-lg hidden md:block" id="logout-btn">Avialable jobs</a>
+            {% endif %}
+            <div id="profile" class="flex items-center gap-4">
+
+                <span class="flex gap-2 items-center">
+                    {% if user.profile.profile_picture  %}
+                    <img src="{{user.profile.profile_picture.url}}" alt="" class="h-[45px] w-[45px] rounded-full object-cover object-center">
+                    {% else %}
+                    <img src="{% static "images/default.webp" %}" alt="" class="h-[45px] w-[45px] rounded-full object-contain object-center">
+                    {% endif %}
+                    <p> {{user.username}} </p>
+                </span>
+                <i class="fa-solid fa-chevron-down" style="color: #ffffff;"></i>
+            </div>
+            <a href="{% url "accounts:logout" %}" class="absolute bottom-[-75px] md:-bottom-10 bg-black py-2 px-5 w-full hover:bg-gray-600 transition-all duration-300 ease-in-out rounded-bl-lg rounded-br-lg md:rounded-lg hidden" id="logout-btn">Logout</a>
+        </div>
+        {% else %}
+        <div class="flex gap-7 items-center">
+            <a href="{% url "accounts:login" %}" class="text-lg md:text-xl md:font-medium hover:text-gray-400 transition-all duration-300 ease-in-out">Login</a>
+            <a href="{% url "accounts:register" %}" class="text-lg md:text-xl md:font-medium hover:text-gray-400 transition-all duration-300 ease-in-out">Signup</a>
+            {% endif %}
+        </div>
+    </nav>
+</header>
+<main>
+    {% block content %}
+    {% if not request.user.is_authenticated %}
+    <div class="flex flex-col justify-center items-center gap-2 mt-[100px] text-white">
+        <p class="text-2xl font-bold">Looking for a Job?</p>
+        <p class="text-md font-bold">OR</p>
+        <p class="text-2xl font-bold">Looking to Create one?</p>
+        <a href="{% url "accounts:register" %}" class="border-2 py-2 px-5 rounded-xl font-medium hover:border-gray-400 hover:text-gray-400 transition-all duration-300 ease-in-out">Join now</a>
+    </div>
+    {% endif %}
+    {% endblock content %}
+</main>
+
+<script>
+    const profileContainer = document.getElementById('profile');
+    const logoutBtns = document.querySelectorAll('#logout-btn');
+
+    profileContainer.addEventListener('click', () => {
+        logoutBtns.forEach((button) => {
+            button.classList.toggle('hidden');
+        });
+    });
+</script>
+<script src="{% static "js/main.js" %}" defer></script>
+</body>
+</html>

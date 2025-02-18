@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-screen-xl mx-auto w-full px-4 py-8 text-white">
+    {% for job in jobs %}
+    <div class="job-container mb-6 rounded-xl bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+        <div class="p-6">
+           
+            
+            <!-- Job title section -->
+            <div class="flex gap-2 items-center mb-4">
+                <p class="text-lg font-bold text-slate-200">Job Title:</p>
+                <p id="job-title" class="text-xl text-indigo-300 font-semibold transition-all duration-300">{{job.job_title}}</p>
+            </div>
+
+            {% comment %} job description {% endcomment %}
+            <div class="flex flex-col mb-4 pb-4 border-b border-slate-600">
+                <p class="whitespace-nowrap font-medium text-slate-300 mb-2">Job description:</p>
+                <p class="text-slate-300 text-sm leading-relaxed">{{job.job_description}}</p>
+            </div>
+            
+            {% comment %} skills section {% endcomment %}
+            <div class="mb-4 pb-4 border-b border-slate-600">
+                <p class="whitespace-nowrap font-medium text-slate-300 mb-2">Skills required:</p>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% for skill in job.required_skills.all %}
+                    <div class="bg-indigo-500 bg-opacity-20 text-indigo-200 text-sm px-4 py-1 rounded-full border border-indigo-500">
+                        {{skill}}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Job details section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                {% comment %} category {% endcomment %}
+                <div class="flex gap-2 items-center">
+                    <p class="font-medium text-slate-400">Category:</p>
+                    <p class="text-slate-300">{{job.category}}</p>
+                </div>
+
+                {% comment %} Experience {% endcomment %}
+                <div class="flex gap-2 items-center">
+                    <p class="font-medium text-slate-400">Experience:</p>
+                    <p class="text-slate-300">{{job.experience}}</p>
+                </div>
+
+                {% comment %} location {% endcomment %}
+                <div class="flex gap-2 items-center">
+                    <p class="font-medium text-slate-400">Location:</p>
+                    {% if job.location %}
+                    <p class="text-slate-300">{{job.location}}</p>
+                    {% else %}
+                    <p class="text-indigo-300 font-medium">Remote</p>
+                    {% endif %}
+                </div>
+
+                {% comment %} salary {% endcomment %}
+                <div class="flex gap-2 items-center">
+                    <p class="font-medium text-slate-400">Price:</p>
+                    <div class="flex gap-1 items-center text-slate-300">
+                        <span class="text-green-400 font-medium">${{job.min_price}}</span>
+                        <span>-</span>
+                        <span class="text-green-400 font-medium">${{job.max_price}}</span>
+                        <small class="text-slate-400">per hr</small>
+                    </div>
+                </div>
+                
+                {% comment %} duration {% endcomment %}
+                <div class="flex gap-2 items-center">
+                    <p class="font-medium text-slate-400">Duration:</p>
+                    <div class="flex gap-1 items-center text-slate-300">
+                        <span>{{job.min_time}}</span>
+                        <span>-</span>
+                        <span>{{job.max_time}}</span>
+                        <small class="text-slate-400">day(s)</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Timestamp -->
+            <div class="mt-6 text-right">
+                <small class="text-slate-500">Posted {{job.created_at|timesince}} ago</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const jobContainers = document.querySelectorAll(".job-container");
+
+        jobContainers.forEach(jobContainer => {
+            const jobTitle = jobContainer.querySelector("#job-title");
+
+            jobContainer.addEventListener("mouseenter", () => {
+                jobTitle.classList.add("text-indigo-200");
+                jobTitle.classList.add("scale-105");
+            });
+
+            jobContainer.addEventListener("mouseleave", () => {
+                jobTitle.classList.remove("text-indigo-200");
+                jobTitle.classList.remove("scale-105");
+            });
+        });
+    });
+</script>
+
+{% endblock content %}
