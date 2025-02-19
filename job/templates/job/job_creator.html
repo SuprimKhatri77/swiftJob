@@ -1,90 +1,218 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}swiftJob - Job Creator Dashboard{% endblock title %}
 
 {% block content %}
-<div class="max-w-screen-xl mx-auto w-full px-4 py-8 text-white">
-    {% for job in jobs %}
-    <div class="job-container mb-6 rounded-xl bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div class="p-6">
-           
-            
-            <!-- Job title section -->
-            <div class="flex gap-2 items-center mb-4">
-                <p class="text-lg font-bold text-slate-200">Job Title:</p>
-                <p id="job-title" class="text-xl text-indigo-300 font-semibold transition-all duration-300">{{job.job_title}}</p>
+<div class="text-white">
+    <!-- Welcome Section -->
+    <div class="glass-effect p-6 xs-p-4 rounded-xl mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl xs-text-2xl font-bold mb-2 text-shadow">Welcome, {{ user.first_name|default:user.username }}!</h1>
+                <p class="text-lg xs-text-base text-slate-300">Manage your job listings and applications</p>
             </div>
+            <a href="{% url 'job:job-creation-form' %}" class="glass-effect py-3 xs-py-2 px-6 xs-px-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transition-all duration-300 flex items-center gap-2 hover-scale pulse-animation">
+                <i class="fa-solid fa-plus"></i> Post New Job
+            </a>
+        </div>
+    </div>
 
-            {% comment %} job description {% endcomment %}
-            <div class="flex flex-col mb-4 pb-4 border-b border-slate-600">
-                <p class="whitespace-nowrap font-medium text-slate-300 mb-2">Job description:</p>
-                <p class="text-slate-300 text-sm leading-relaxed">{{job.job_description}}</p>
-            </div>
-            
-            {% comment %} skills section {% endcomment %}
-            <div class="mb-4 pb-4 border-b border-slate-600">
-                <p class="whitespace-nowrap font-medium text-slate-300 mb-2">Skills required:</p>
-                <div class="flex flex-wrap gap-2 mt-2">
-                    {% for skill in job.required_skills.all %}
-                    <div class="bg-indigo-500 bg-opacity-20 text-indigo-200 text-sm px-4 py-1 rounded-full border border-indigo-500">
-                        {{skill}}
-                    </div>
-                    {% endfor %}
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 xs-gap-4 mb-8">
+        <div class="glass-effect p-4 rounded-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Active Jobs</p>
+                    <p class="text-2xl font-bold mt-1">{{ active_jobs_count|default:"0" }}</p>
+                </div>
+                <div class="bg-indigo-500 bg-opacity-20 p-3 rounded-lg">
+                    <i class="fa-solid fa-briefcase text-indigo-300 text-xl"></i>
                 </div>
             </div>
-
-            <!-- Job details section -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                {% comment %} category {% endcomment %}
-                <div class="flex gap-2 items-center">
-                    <p class="font-medium text-slate-400">Category:</p>
-                    <p class="text-slate-300">{{job.category}}</p>
+        </div>
+        <div class="glass-effect p-4 rounded-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Total Applications</p>
+                    <p class="text-2xl font-bold mt-1">{{ total_applications|default:"0" }}</p>
                 </div>
-
-                {% comment %} Experience {% endcomment %}
-                <div class="flex gap-2 items-center">
-                    <p class="font-medium text-slate-400">Experience:</p>
-                    <p class="text-slate-300">{{job.experience}}</p>
-                </div>
-
-                {% comment %} location {% endcomment %}
-                <div class="flex gap-2 items-center">
-                    <p class="font-medium text-slate-400">Location:</p>
-                    {% if job.location %}
-                    <p class="text-slate-300">{{job.location}}</p>
-                    {% else %}
-                    <p class="text-indigo-300 font-medium">Remote</p>
-                    {% endif %}
-                </div>
-
-                {% comment %} salary {% endcomment %}
-                <div class="flex gap-2 items-center">
-                    <p class="font-medium text-slate-400">Price:</p>
-                    <div class="flex gap-1 items-center text-slate-300">
-                        <span class="text-green-400 font-medium">${{job.min_price}}</span>
-                        <span>-</span>
-                        <span class="text-green-400 font-medium">${{job.max_price}}</span>
-                        <small class="text-slate-400">per hr</small>
-                    </div>
-                </div>
-                
-                {% comment %} duration {% endcomment %}
-                <div class="flex gap-2 items-center">
-                    <p class="font-medium text-slate-400">Duration:</p>
-                    <div class="flex gap-1 items-center text-slate-300">
-                        <span>{{job.min_time}}</span>
-                        <span>-</span>
-                        <span>{{job.max_time}}</span>
-                        <small class="text-slate-400">day(s)</small>
-                    </div>
+                <div class="bg-purple-500 bg-opacity-20 p-3 rounded-lg">
+                    <i class="fa-solid fa-file-alt text-purple-300 text-xl"></i>
                 </div>
             </div>
-            
-            <!-- Timestamp -->
-            <div class="mt-6 text-right">
-                <small class="text-slate-500">Posted {{job.created_at|timesince}} ago</small>
+        </div>
+        <div class="glass-effect p-4 rounded-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Pending Review</p>
+                    <p class="text-2xl font-bold mt-1">{{ pending_count|default:"0" }}</p>
+                </div>
+                <div class="bg-yellow-500 bg-opacity-20 p-3 rounded-lg">
+                    <i class="fa-solid fa-clock text-yellow-300 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        <div class="glass-effect p-4 rounded-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-slate-400 text-sm">Hired</p>
+                    <p class="text-2xl font-bold mt-1">{{ hired_count|default:"0" }}</p>
+                </div>
+                <div class="bg-green-500 bg-opacity-20 p-3 rounded-lg">
+                    <i class="fa-solid fa-user-check text-green-300 text-xl"></i>
+                </div>
             </div>
         </div>
     </div>
-    {% endfor %}
+
+    <!-- Active Jobs Section -->
+    <div class="glass-effect p-6 xs-p-4 rounded-xl mb-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl xs-text-xl font-bold">Active Job Listings</h2>
+            <div class="flex gap-2">
+                <button class="glass-effect py-2 px-4 rounded-lg text-sm hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                    <i class="fa-solid fa-filter mr-1"></i> Filter
+                </button>
+                <button class="glass-effect py-2 px-4 rounded-lg text-sm hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                    <i class="fa-solid fa-sort mr-1"></i> Sort
+                </button>
+            </div>
+        </div>
+
+        {% if jobs %}
+            {% for job in jobs %}
+            <div class="job-container mb-6 rounded-xl bg-gradient-to-r from-slate-800 to-slate-700 shadow-lg hover:shadow-xl transition-all duration-300">
+                <div class="p-6">
+                    <!-- Job Header -->
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex gap-2 items-center">
+                            <p id="job-title" class="text-xl text-indigo-300 font-semibold transition-all duration-300">{{job.job_title}}</p>
+                            <span class="bg-indigo-500 bg-opacity-20 text-indigo-200 text-xs px-3 py-1 rounded-full">
+                                {{ job.category }}
+                            </span>
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="" class="glass-effect p-2 rounded-lg hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                                <i class="fa-solid fa-edit"></i>
+                            </a>
+                            <button class="glass-effect p-2 rounded-lg hover:bg-red-500 transition-all duration-300">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="mb-4">
+                        <div class="flex flex-wrap gap-2">
+                            {% for skill in job.required_skills.all %}
+                            <div class="bg-indigo-500 bg-opacity-20 text-indigo-200 text-sm px-4 py-1 rounded-full border border-indigo-500">
+                                {{skill}}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Footer Info -->
+                    <div class="flex flex-wrap justify-between items-center mt-4 pt-4 border-t border-slate-600">
+                        <div class="flex gap-4 text-sm text-slate-400">
+                            <span><i class="fa-solid fa-map-marker-alt mr-1"></i> {{job.location|default:"Remote"}}</span>
+                            <span><i class="fa-solid fa-dollar-sign mr-1"></i> ${{job.min_price}} - ${{job.max_price}}/hr</span>
+                            <span><i class="fa-solid fa-clock mr-1"></i> {{job.min_time}} - {{job.max_time}} days</span>
+                        </div>
+                        <small class="text-slate-500">Posted {{job.created_at|timesince}} ago</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center py-8">
+                <i class="fa-solid fa-file-circle-plus text-4xl text-indigo-300 mb-3"></i>
+                <p class="text-slate-300 mb-4">You haven't posted any jobs yet</p>
+                <a href="{% url 'job:job-creation-form' %}" class="glass-effect py-2 px-4 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300 inline-flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Create Your First Job
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Recent Applications Section -->
+    <div class="glass-effect p-6 xs-p-4 rounded-xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl xs-text-xl font-bold">Recent Applications</h2>
+            <a href="{% url 'application:applications' %}" class="text-indigo-300 hover:text-indigo-200 transition-all duration-300 text-sm">
+                View All <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>
+        </div>
+
+        {% if recent_applications %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="text-slate-300 text-sm">
+                    <tr>
+                        <th class="pb-4">Applicant</th>
+                        <th class="pb-4">Job Title</th>
+                        <th class="pb-4">Applied Date</th>
+                        <th class="pb-4">Status</th>
+                        <th class="pb-4">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in recent_applications %}
+                    <tr class="border-t border-slate-700">
+                        <td class="py-4">
+                            <div class="flex items-center gap-3">
+                                {% if application.applicant.profile.profile_picture %}
+                                <img src="{{ application.applicant.profile.profile_picture.url }}" alt="" class="w-8 h-8 rounded-full">
+                                {% else %}
+                                <div class="w-8 h-8 rounded-full bg-indigo-500 bg-opacity-20 flex items-center justify-center">
+                                    <i class="fa-solid fa-user text-indigo-300"></i>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <p class="font-medium">{{ application.applicant.get_full_name }}</p>
+                                    <p class="text-sm text-slate-400">{{ application.applicant.email }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 text-indigo-300">{{ application.job.job_title }}</td>
+                        <td class="py-4 text-sm text-slate-400">{{ application.date_applied|date:"M d, Y" }}</td>
+                        <td class="py-4">
+                            {% if application.status == 'in_progress' %}
+                                <span class="bg-yellow-500 bg-opacity-20 text-yellow-300 text-sm px-3 py-1 rounded-full">Pending</span>
+                            {% elif application.status == 'reviewing' %}
+                                <span class="bg-blue-500 bg-opacity-20 text-blue-300 text-sm px-3 py-1 rounded-full">Reviewing</span>
+                            {% elif application.status == 'accepted' %}
+                                <span class="bg-green-500 bg-opacity-20 text-green-300 text-sm px-3 py-1 rounded-full">Accepted</span>
+                            {% elif application.status == 'rejected' %}
+                                <span class="bg-red-500 bg-opacity-20 text-red-300 text-sm px-3 py-1 rounded-full">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4">
+                            <div class="flex gap-2">
+                                <a href="{% url "application:application-detail" application.id %}" class="glass-effect p-2 rounded-lg hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <button class="glass-effect p-2 rounded-lg hover:bg-green-500 transition-all duration-300">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                                <button class="glass-effect p-2 rounded-lg hover:bg-red-500 transition-all duration-300">
+                                    <i class="fa-solid fa-times"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-8">
+            <i class="fa-solid fa-inbox text-4xl text-indigo-300 mb-3"></i>
+            <p class="text-slate-300">No applications received yet</p>
+        </div>
+        {% endif %}
+    </div>
 </div>
 
 <script>
@@ -106,5 +234,4 @@
         });
     });
 </script>
-
 {% endblock content %}

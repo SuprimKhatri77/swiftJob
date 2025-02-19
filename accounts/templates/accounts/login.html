@@ -1,71 +1,70 @@
 {% extends 'base.html' %}
-{% block title %}Login | swiftCRM{% endblock title %}
+{% block title %}Login | swiftJob{% endblock title %}
 {% load static %}
 {% block content %}
-<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+<div class="min-h-screen flex flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <h2 class="text-3xl font-extrabold text-white">
             Sign in to your account
         </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
+        <p class="mt-2 text-sm text-gray-300">
             Or
-            <a href="{% url 'accounts:register' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
+            <a href="{% url 'accounts:register' %}" class="font-medium text-indigo-200 hover:text-white transition-all">
                 create a new account
             </a>
         </p>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div class="bg-white/10 backdrop-blur-lg shadow-lg rounded-lg py-8 px-6 sm:px-10">
             <form class="space-y-6" method="post">
                 {% csrf_token %}
                 
                 <!-- Username field -->
                 <div>
-                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-white">
                         Username
                     </label>
                     <div class="mt-1">
                         <input type="text" placeholder="Enter username" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
-                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                               {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+                               class="w-full px-4 py-2 border border-gray-500 rounded-md bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     </div>
                     {% if form.username.errors %}
-                        <p class="mt-2 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                        <p class="mt-2 text-sm text-red-400">{{ form.username.errors.0 }}</p>
                     {% endif %}
                 </div>
 
                 <!-- Password field -->
                 <div>
-                    <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-white">
                         Password
                     </label>
                     <div class="mt-1">
                         <input type="password" placeholder="Enter password" name="{{ form.password.html_name }}" id="{{ form.password.id_for_label }}"
-                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                               class="w-full px-4 py-2 border border-gray-500 rounded-md bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     </div>
                     {% if form.password.errors %}
-                        <p class="mt-2 text-sm text-red-600">{{ form.password.errors.0 }}</p>
+                        <p class="mt-2 text-sm text-red-400">{{ form.password.errors.0 }}</p>
                     {% endif %}
                 </div>
 
+                <!-- Remember me -->
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
                         <input id="remember_me" name="remember_me" type="checkbox"
-                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                        <label for="remember_me" class="ml-2 block text-sm text-gray-900">
+                               class="h-4 w-4 text-indigo-400 focus:ring-indigo-500 border-gray-300 rounded bg-gray-700">
+                        <label for="remember_me" class="ml-2 text-sm text-white">
                             Remember me
                         </label>
                     </div>
                 </div>
 
+                <!-- Sign-in Button -->
                 <div>
-                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit" class="w-full py-2 px-4 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all">
                         Sign in
                     </button>
                 </div>
-
-                 
             </form>
         </div>
     </div>

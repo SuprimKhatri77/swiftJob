@@ -4,118 +4,125 @@
 {% block title %}{{ application.applicant.username }}'s Application{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <div class="max-w-3xl mx-auto">
+<div class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
         <!-- Back link -->
-        <div class="mb-4">
-            <a href="javascript:history.back()" class="flex items-center text-indigo-200 hover:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="mb-6">
+            <a href="javascript:history.back()" class="group flex items-center text-indigo-200 hover:text-white transition-colors duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 transform group-hover:-translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
                 Back to applications
             </a>
         </div>
 
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="backdrop-blur-md bg-white/10 rounded-xl shadow-xl overflow-hidden border border-white/20">
             <!-- Header with applicant info -->
-            <div class="bg-gray-50 px-6 py-5 border-b">
+            <div class="border-b border-white/20 px-6 py-6">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                     <div class="mb-4 md:mb-0">
-                        <h2 class="text-xl font-semibold text-gray-900">Application for {{ application.job.job_title }}</h2>
-                        <p class="text-gray-600 mt-1">Submitted on {{ application.date_applied|date:"F d, Y" }}</p>
+                        <h2 class="text-2xl font-semibold text-white">Application for {{ application.job.job_title }}</h2>
+                        <p class="text-indigo-200 mt-2">Submitted on {{ application.date_applied|date:"F d, Y" }}</p>
                     </div>
-                    <div class="inline-flex px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                    <div class="inline-flex px-4 py-2 rounded-full text-sm font-medium bg-yellow-400/20 text-yellow-300 border border-yellow-400/30">
                         Under Review
                     </div>
                 </div>
             </div>
             
             <!-- Applicant Information -->
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Applicant Information</h3>
+            <div class="p-6 border-b border-white/20">
+                <h3 class="text-xl font-medium text-white mb-6">Applicant Information</h3>
                 
                 <div class="flex flex-col md:flex-row">
-                    <div class="flex-shrink-0 mb-4 md:mb-0 md:mr-6">
-                        <div class="h-24 w-24 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-500">
+                    <div class="flex-shrink-0 mb-6 md:mb-0 md:mr-8">
+                        <div class="h-24 w-24 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white">
                             <span class="text-3xl font-medium">{{ application.applicant.username|first|upper }}</span>
                         </div>
                     </div>
                     
-                    <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                    <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                         <div>
-                            <p class="text-sm text-gray-500">Full Name</p>
-                            <p class="font-medium">{{ application.applicant.get_full_name|default:application.applicant.username }}</p>
+                            <p class="text-sm text-indigo-200">Full Name</p>
+                            <p class="text-white font-medium mt-1">{{ application.applicant.get_full_name|default:application.applicant.username }}</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Email</p>
-                            <p class="font-medium">{{ application.applicant.email }}</p>
+                            <p class="text-sm text-indigo-200">Email</p>
+                            <p class="text-white font-medium mt-1">{{ application.applicant.email }}</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Username</p>
-                            <p class="font-medium">{{ application.applicant.username }}</p>
+                            <p class="text-sm text-indigo-200">Username</p>
+                            <p class="text-white font-medium mt-1">{{ application.applicant.username }}</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-500">Applied For</p>
-                            <p class="font-medium">{{ application.job.job_title }}</p>
+                            <p class="text-sm text-indigo-200">Applied For</p>
+                            <p class="text-white font-medium mt-1">{{ application.job.job_title }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <!-- Cover Letter -->
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900 mb-3">Cover Letter</h3>
-                <div class="bg-gray-50 p-4 rounded-lg whitespace-pre-line text-gray-700 prose max-w-none">
+            <div class="p-6 border-b border-white/20">
+                <h3 class="text-xl font-medium text-white mb-4">Cover Letter</h3>
+                <div class="backdrop-blur-md bg-white/5 p-6 rounded-lg text-indigo-100 prose prose-invert max-w-none border border-white/10">
                     {{ application.cover_letter }}
                 </div>
             </div>
             
             <!-- Resume -->
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900 mb-3">Resume</h3>
+            <div class="p-6 border-b border-white/20">
+                <h3 class="text-xl font-medium text-white mb-4">Resume</h3>
                 {% if application.resume %}
-                    <div class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div class="flex items-center backdrop-blur-md bg-white/5 p-4 rounded-lg border border-white/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <div class="ml-3">
-                            <div class="text-sm font-medium text-gray-900">{{ application.resume.name|default:"Resume" }}</div>
-                            <div class="text-xs text-gray-500">{{ application.resume.size|filesizeformat }}</div>
+                        <div class="ml-4">
+                            <div class="text-white font-medium">{{ application.resume.name|default:"Resume" }}</div>
+                            <div class="text-sm text-indigo-200">{{ application.resume.size|filesizeformat }}</div>
                         </div>
-                        <div class="ml-auto flex">
-                            <a href="{{ application.resume.url }}" target="_blank" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 mr-2">
+                        <div class="ml-auto flex space-x-3">
+                            <a href="{{ application.resume.url }}" target="_blank" 
+                               class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition-all duration-200 border border-white/10">
                                 View
                             </a>
-                            <a href="{{ application.resume.url }}" download class="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                            <a href="{{ application.resume.url }}" download 
+                               class="inline-flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white text-sm font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-purple-500/25">
                                 Download
                             </a>
                         </div>
                     </div>
                 {% else %}
-                    <p class="text-gray-500 italic">No resume provided</p>
+                    <p class="text-indigo-200 italic">No resume provided</p>
                 {% endif %}
             </div>
             
             <!-- Action Buttons -->
-            <div class="p-6 bg-gray-50 flex flex-col sm:flex-row sm:justify-end gap-3">
-                <button type="button" class="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    Reject
-                </button>
-                <button type="button" class="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Schedule Interview
-                </button>
-                <button type="button" class="inline-flex justify-center items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    Approve
-                </button>
+            <div class="p-6 backdrop-blur-md bg-white/5 flex flex-col sm:flex-row sm:justify-end gap-3">
+                {% for application in applications  %}
+                <form action="{% url "application:reject-application" application.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="inline-flex justify-center items-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-red-500/25">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Reject
+                    </button>
+                </form>
+               
+                <form action="{% url "application:accept-application" application.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" 
+                            class="inline-flex justify-center items-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-green-500/25">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Approve
+                    </button>
+                </form>
+                {% endfor %}
             </div>
         </div>
     </div>
