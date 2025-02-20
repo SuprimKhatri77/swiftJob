@@ -59,13 +59,13 @@
             </div>
         </div>
 
-        <!-- Middle Column - Recent Applications -->
+        <!--  Recent Applications -->
         <div class="glass-effect p-6 xs-p-4 rounded-xl lg:col-span-2">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl xs-text-xl font-bold flex items-center gap-2">
                     <i class="fa-solid fa-history text-yellow-300"></i> Recent Applications
                 </h2>
-                <a href="" class="text-yellow-300 hover:underline text-sm xs-text-xs flex items-center gap-1">
+                <a href="{% url "application:recent-applications-all" %}" class="text-yellow-300 hover:underline text-sm xs-text-xs flex items-center gap-1">
                     View all <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
@@ -83,8 +83,8 @@
                             <div class="flex items-center mt-2 md:mt-0">
                                 {% if application.status == 'pending' %}
                                     <span class="bg-yellow-500 text-yellow-900 py-1 px-3 rounded-full text-sm xs-text-xs font-medium">Pending</span>
-                                {% elif application.status == 'in_review' %}
-                                    <span class="bg-blue-500 text-blue-100 py-1 px-3 rounded-full text-sm xs-text-xs font-medium">In Review</span>
+                                {% elif application.status == 'in_progress' %}
+                                    <span class="bg-blue-500 text-blue-100 py-1 px-3 rounded-full text-sm xs-text-xs font-medium">In Progress</span>
                                 {% elif application.status == 'accepted' %}
                                     <span class="bg-green-500 text-green-100 py-1 px-3 rounded-full text-sm xs-text-xs font-medium">Accepted</span>
                                 {% elif application.status == 'rejected' %}

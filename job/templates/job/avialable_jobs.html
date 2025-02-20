@@ -19,121 +19,199 @@
         </div>
     </div>
 
-    <!-- Jobs List -->
-    <div class="space-y-6 xs-space-y-4">
-        {% if jobs %}
-            {% for job in jobs %}
-                <div class="glass-effect p-6 xs-p-4 rounded-xl hover-scale transition-all duration-300">
-                    <div class="flex flex-col lg:flex-row justify-between gap-4">
-                        <div class="flex-1">
-                            <h2 class="text-2xl xs-text-xl font-bold mb-2">{{ job.job_title }}</h2>
-                            <div class="flex flex-wrap gap-2 mb-3">
-                                <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
-                                    <i class="fa-solid fa-building text-yellow-300"></i> {{ job.company_name }}
-                                </span>
-                                {% if job.location %}
-                                <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
-                                    <i class="fa-solid fa-location-dot text-yellow-300"></i> {{ job.location }}
-                                </span>
-                                {% else %}
-                                <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
-                                    <i class="fa-solid fa-globe text-yellow-300"></i> Remote
-                                </span>
-                                {% endif %}
-                                <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
-                                    <i class="fa-solid fa-briefcase text-yellow-300"></i> {{ job.job_type }}
-                                </span>
-                            </div>
-                            <p class="text-sm xs-text-xs mb-4 line-clamp-2">{{ job.job_description }}</p>
-                            
-                            <div class="flex flex-wrap gap-2 mt-4">
-                                {% for skill in job.required_skills.all %}
-                                <span class="bg-indigo-500 bg-opacity-20 text-indigo-200 text-xs px-3 py-1 rounded-full border border-indigo-500">
-                                    {{ skill }}
-                                </span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="flex flex-col justify-between items-end">
-                            <div class="text-right mb-4 lg:mb-0">
-                                <div class="text-yellow-300 font-bold text-lg xs-text-base mb-1">
-                                    ${{ job.min_price }} - ${{ job.max_price }}
-                                    <span class="text-xs font-normal opacity-80">per hr</span>
-                                </div>
-                                <div class="text-sm xs-text-xs opacity-80">
-                                    Duration: {{ job.min_time }} - {{ job.max_time }} day(s)
-                                </div>
-                                <div class="text-xs opacity-60 mt-1">
-                                    Posted {{ job.created_at|timesince }} ago
-                                </div>
-                            </div>
-                            <a href="{% url "application:job-application-form" job.slug %}" class="glass-effect py-2 px-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transition-all duration-300 ease-in-out flex items-center gap-2 hover-scale">
-                                Apply now <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </div>
+    <!-- Search and Filter Section -->
+    <div class="glass-effect p-6 xs-p-4 rounded-xl mb-8 xs-mb-5">
+        <form method="GET" action="{% url 'job:avialable-jobs' %}">
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 xs-gap-3">
+                <div class="col-span-1 md:col-span-2">
+                    <label for="search" class="block text-sm font-medium mb-1">Search Jobs</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute z-10 left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="search" name="q" query="{{query}}" placeholder="Job title, skills, or keywords" 
+                                class="glass-effect py-3 xs-py-2 px-10 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                                value="{{query}}">
                     </div>
                 </div>
-            {% endfor %}
-            
-            <!-- Pagination -->
-            {% if is_paginated %}
-            <div class="flex justify-center mt-8">
-                <div class="glass-effect py-2 px-4 rounded-full flex items-center gap-2">
-                    {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
-                        class="px-3 py-1 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </a>
-                    {% endif %}
-                    
-                    {% for num in page_obj.paginator.page_range %}
-                        {% if page_obj.number == num %}
-                        <span class="px-3 py-1 bg-yellow-300 text-indigo-900 rounded-full">{{ num }}</span>
-                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
-                            class="px-3 py-1 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300">
-                            {{ num }}
-                        </a>
-                        {% endif %}
-                    {% endfor %}
-                    
-                    {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
-                        class="px-3 py-1 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </a>
-                    {% endif %}
-                </div>
             </div>
-            {% endif %}
-            
-        {% else %}
-            <div class="glass-effect p-10 rounded-xl text-center">
-                <i class="fa-solid fa-search text-6xl text-yellow-300 mb-4"></i>
-                <h2 class="text-2xl font-bold mb-2">No Jobs Found</h2>
-                <p class="text-lg opacity-80 mb-6">We couldn't find any jobs matching your criteria.</p>
-                <a href="{% url 'job:avialable-jobs' %}" class="glass-effect py-3 px-6 rounded-full font-medium hover:bg-white hover:text-indigo-700 transition-all duration-300 ease-in-out inline-flex items-center gap-2 hover-scale">
-                    <i class="fa-solid fa-rotate"></i> Reset Filters
-                </a>
-            </div>
-        {% endif %}
+        </form>
     </div>
 
-    <!-- Career Tips Banner -->
-    <div class="glass-effect p-6 xs-p-4 rounded-xl mt-10">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <h2 class="text-2xl xs-text-xl font-bold mb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-lightbulb text-yellow-300"></i> Need Career Advice?
-                </h2>
-                <p class="mb-3">Get tips on resume writing, interview preparation, and career growth from our experts.</p>
-            </div>
-            <a href="#" class="glass-effect py-2 px-4 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300 flex items-center gap-2 hover-scale">
-                <i class="fa-solid fa-graduation-cap"></i> View Career Tips
-            </a>
-        </div>
-    </div>
-</div>
+    <!-- Jobs List -->
+     {% if query %}
+     {% if search_results %}
+     <p class="text-lg md:text-2xl xs-p-4 xs-text-base md:font-medium mb-8">Search result for "{{query}}" </p>
+     {% for job in search_results %}
+     <div class="glass-effect p-6 xs-p-4 mb-5 rounded-xl hover-scale transition-all duration-300">
+         <div class="flex flex-col lg:flex-row justify-between gap-4">
+             <div class="flex-1">
+                 <h2 class="text-2xl xs-text-xl font-bold mb-2">{{ job.job_title }}</h2>
+                 <div class="flex flex-wrap gap-2 mb-3">
+                     <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                         <i class="fa-solid fa-building text-yellow-300"></i> {{ job.company_name }}
+                     </span>
+                     {% if job.location %}
+                     <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                         <i class="fa-solid fa-location-dot text-yellow-300"></i> {{ job.location }}
+                     </span>
+                     {% else %}
+                     <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                         <i class="fa-solid fa-globe text-yellow-300"></i> Remote
+                     </span>
+                     {% endif %}
+                     <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                         <i class="fa-solid fa-briefcase text-yellow-300"></i> {{ job.job_type }}
+                     </span>
+                 </div>
+                 <p class="text-sm xs-text-xs mb-4 line-clamp-2">{{ job.job_description }}</p>
+                 
+                 <div class="flex flex-wrap gap-2 mt-4">
+                     {% for skill in job.required_skills.all %}
+                     <span class="bg-indigo-500 bg-opacity-20 text-indigo-200 text-xs px-3 py-1 rounded-full border border-indigo-500">
+                         {{ skill }}
+                     </span>
+                     {% endfor %}
+                 </div>
+             </div>
+             <div class="flex flex-col justify-between items-end">
+                 <div class="text-right mb-4 lg:mb-0">
+                     <div class="text-yellow-300 font-bold text-lg xs-text-base mb-1">
+                         ${{ job.min_price }} - ${{ job.max_price }}
+                         <span class="text-xs font-normal opacity-80">per hr</span>
+                     </div>
+                     <div class="text-sm xs-text-xs opacity-80">
+                         Duration: {{ job.min_time }} - {{ job.max_time }} day(s)
+                     </div>
+                     <div class="text-xs opacity-60 mt-1">
+                         Posted {{ job.created_at|timesince }} ago
+                     </div>
+                 </div>
+                 <a href="{% url "application:job-application-form" job.slug %}" class="glass-effect py-2 px-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transition-all duration-300 ease-in-out flex items-center gap-2 hover-scale">
+                     Apply now <i class="fa-solid fa-arrow-right"></i>
+                 </a>
+             </div>
+         </div>
+     </div>
+ {% endfor %}
+ {% else %}
+ <h2 class="text-xl md:text-2xl font-medium">No jobs found for "{{query}}" </h2>
+     {% endif %}
+
+     {% else %}
+     <div class="space-y-6 xs-space-y-4">
+         {% if jobs %}
+             {% for job in jobs %}
+                 <div class="glass-effect p-6 xs-p-4 rounded-xl hover-scale transition-all duration-300">
+                     <div class="flex flex-col lg:flex-row justify-between gap-4">
+                         <div class="flex-1">
+                             <h2 class="text-2xl xs-text-xl font-bold mb-2">{{ job.job_title }}</h2>
+                             <div class="flex flex-wrap gap-2 mb-3">
+                                 <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                                     <i class="fa-solid fa-building text-yellow-300"></i> {{ job.company_name }}
+                                 </span>
+                                 {% if job.location %}
+                                 <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                                     <i class="fa-solid fa-location-dot text-yellow-300"></i> {{ job.location }}
+                                 </span>
+                                 {% else %}
+                                 <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                                     <i class="fa-solid fa-globe text-yellow-300"></i> Remote
+                                 </span>
+                                 {% endif %}
+                                 <span class="glass-effect py-1 px-3 rounded-full text-sm xs-text-xs flex items-center gap-1">
+                                     <i class="fa-solid fa-briefcase text-yellow-300"></i> {{ job.job_type }}
+                                 </span>
+                             </div>
+                             <p class="text-sm xs-text-xs mb-4 line-clamp-2">{{ job.job_description }}</p>
+                             
+                             <div class="flex flex-wrap gap-2 mt-4">
+                                 {% for skill in job.required_skills.all %}
+                                 <span class="bg-indigo-500 bg-opacity-20 text-indigo-200 text-xs px-3 py-1 rounded-full border border-indigo-500">
+                                     {{ skill }}
+                                 </span>
+                                 {% endfor %}
+                             </div>
+                         </div>
+                         <div class="flex flex-col justify-between items-end">
+                             <div class="text-right mb-4 lg:mb-0">
+                                 <div class="text-yellow-300 font-bold text-lg xs-text-base mb-1">
+                                     ${{ job.min_price }} - ${{ job.max_price }}
+                                     <span class="text-xs font-normal opacity-80">per hr</span>
+                                 </div>
+                                 <div class="text-sm xs-text-xs opacity-80">
+                                     Duration: {{ job.min_time }} - {{ job.max_time }} day(s)
+                                 </div>
+                                 <div class="text-xs opacity-60 mt-1">
+                                     Posted {{ job.created_at|timesince }} ago
+                                 </div>
+                             </div>
+                             <a href="{% url "application:job-application-form" job.slug %}" class="glass-effect py-2 px-4 rounded-full font-medium hover:bg-white hover:text-indigo-700 transition-all duration-300 ease-in-out flex items-center gap-2 hover-scale">
+                                 Apply now <i class="fa-solid fa-arrow-right"></i>
+                             </a>
+                         </div>
+                     </div>
+                 </div>
+             {% endfor %}
+             
+             <!-- Pagination -->
+             {% if is_paginated %}
+             <div class="flex justify-center mt-8">
+                 <div class="glass-effect py-2 px-4 rounded-full flex items-center gap-2">
+                     {% if page_obj.has_previous %}
+                     <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                         class="px-3 py-1 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                         <i class="fa-solid fa-chevron-left"></i>
+                     </a>
+                     {% endif %}
+                     
+                     {% for num in page_obj.paginator.page_range %}
+                         {% if page_obj.number == num %}
+                         <span class="px-3 py-1 bg-yellow-300 text-indigo-900 rounded-full">{{ num }}</span>
+                         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                         <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                             class="px-3 py-1 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                             {{ num }}
+                         </a>
+                         {% endif %}
+                     {% endfor %}
+                     
+                     {% if page_obj.has_next %}
+                     <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                         class="px-3 py-1 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                         <i class="fa-solid fa-chevron-right"></i>
+                     </a>
+                     {% endif %}
+                 </div>
+             </div>
+             {% endif %}
+             
+         {% else %}
+             <div class="glass-effect p-10 rounded-xl text-center">
+                 <i class="fa-solid fa-search text-6xl text-yellow-300 mb-4"></i>
+                 <h2 class="text-2xl font-bold mb-2">No Jobs Found</h2>
+                 <p class="text-lg opacity-80 mb-6">We couldn't find any jobs matching your criteria.</p>
+                 <a href="{% url 'job:avialable-jobs' %}" class="glass-effect py-3 px-6 rounded-full font-medium hover:bg-white hover:text-indigo-700 transition-all duration-300 ease-in-out inline-flex items-center gap-2 hover-scale">
+                     <i class="fa-solid fa-rotate"></i> Reset Filters
+                 </a>
+             </div>
+         {% endif %}
+     </div>
+     <!-- Career Tips Banner -->
+     <div class="glass-effect p-6 xs-p-4 rounded-xl mt-10">
+         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+             <div>
+                 <h2 class="text-2xl xs-text-xl font-bold mb-2 flex items-center gap-2">
+                     <i class="fa-solid fa-lightbulb text-yellow-300"></i> Need Career Advice?
+                 </h2>
+                 <p class="mb-3">Get tips on resume writing, interview preparation, and career growth from our experts.</p>
+             </div>
+             <a href="#" class="glass-effect py-2 px-4 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300 flex items-center gap-2 hover-scale">
+                 <i class="fa-solid fa-graduation-cap"></i> View Career Tips
+             </a>
+         </div>
+     </div>
+ </div>
+     {% endif %}
+
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {

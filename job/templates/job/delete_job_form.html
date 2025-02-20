@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Job - swiftJob{% endblock title %}
+
+{% block content %}
+<div class="text-white">
+    <!-- Delete Confirmation Section -->
+    <div class="glass-effect p-6 xs-p-4 rounded-xl mb-8">
+        <h1 class="text-3xl xs-text-2xl font-bold mb-4 text-shadow">Delete Job Listing</h1>
+        <p class="text-lg xs-text-base text-slate-300 mb-4">Are you sure you want to delete the job listing for "<strong>{{ job.job_title }}</strong>"? This action cannot be undone.</p>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="flex justify-between gap-4">
+                <button type="submit" class="glass-effect py-3 px-6 rounded-full font-medium bg-red-500 hover:bg-red-600 text-white transition-all duration-300">
+                    Delete
+                </button>
+                <a href="{% url 'job:job-creator' %}" class="glass-effect py-3 px-6 rounded-full font-medium bg-indigo-500 hover:bg-indigo-600 text-white transition-all duration-300">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

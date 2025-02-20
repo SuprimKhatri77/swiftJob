@@ -74,4 +74,26 @@ def reject_application(request,id):
         application.save()
         return redirect('application:applications')
     
+
+@login_required
+def recent_applications(request):
+    status = request.GET.get('status', '')
+    order = request.GET.get('order', '')
+    applications = Apply.objects.filter(applicant=request.user).order_by('-date_applied')
+
+    if status and status != 'all':
+        applications =  applications.filter(status=status)
+    if order == 'newest':
+        applications = applications.all().order_by('-date_applied')
+    elif order == 'oldest':
+        applications = applications.all().order_by('date_applied')
+    else:
+        order = 'newest'
+    context = {
+        'applications':applications,
+        'status':status,
+        'order':order
+    }
+    return render(request,'application/recent_applications.html',context)
+    
         

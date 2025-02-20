@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}swiftJob - Recent Applications{% endblock title %}
+
+{% block content %}
+<div class="text-white">
+    <!-- Header Section -->
+    <div class="glass-effect p-6 xs-p-4 rounded-2xl mb-8 xs-mb-5">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl xs-text-2xl font-bold mb-2 text-shadow">Your Applications</h1>
+                <p class="text-lg xs-text-base">Track and manage your job applications</p>
+            </div>
+            <div class="flex gap-3">
+                <div class="relative">
+                    <form method="GET" action="{% url "application:recent-applications-all" %}">
+                        <select name="status" class="appearance-none glass-effect py-2 pl-4 pr-10 rounded-lg bg-transparent border border-white/10 focus:outline-none focus:border-yellow-300/50 text-white cursor-pointer" onchange="this.form.submit()">
+                            <option value="all" class="bg-gray-800">All Status</option>
+                            <option value="in_progress" {% if status == "in_progress" %}selected{% endif %} class="bg-gray-800">In Progress</option>
+                            <option value="accepted" {% if status == "accepted" %}selected{% endif %} class="bg-gray-800">Accepted</option>
+                            <option value="rejected" {% if status == "rejected" %}selected{% endif %} class="bg-gray-800">Rejected</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                    <div class="relative">
+                                <select name="order" class="appearance-none glass-effect py-2 pl-4 pr-10 rounded-lg bg-transparent border border-white/10 focus:outline-none focus:border-yellow-300/50 text-white cursor-pointer" onchange="this.form.submit()">
+                                    <option value="newest" {% if order == 'newest' %} selected {% endif %} class="bg-gray-800">Newest First</option>
+                                    <option value="oldest" {% if order == 'oldest' %} selected {% endif %} class="bg-gray-800">Oldest First</option>
+                                </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-white">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applications List -->
+    <div class="glass-effect p-6 xs-p-4 rounded-xl">
+        {% if applications %}
+            <div class="space-y-4">
+                {% for application in applications %}
+                <div class="glass-effect p-5 xs-p-4 rounded-lg hover-scale transition-all duration-300">
+                    <div class="flex flex-col lg:flex-row justify-between gap-4">
+                        <div class="flex-grow">
+                            <div class="flex flex-col md:flex-row md:items-center gap-3 mb-3">
+                                <h3 class="font-bold text-xl xs-text-lg">{{ application.job.job_title }}</h3>
+                                {% if application.status == 'pending' %}
+                                    <span class="bg-yellow-500 text-yellow-900 py-1 px-3 rounded-full text-sm xs-text-xs font-medium w-fit">Pending</span>
+                                {% elif application.status == 'in_progress' %}
+                                    <span class="bg-blue-500 text-blue-100 py-1 px-3 rounded-full text-sm xs-text-xs font-medium">In Progress</span>
+                                {% elif application.status == 'accepted' %}
+                                    <span class="bg-green-500 text-green-100 py-1 px-3 rounded-full text-sm xs-text-xs font-medium w-fit">Accepted</span>
+                                {% elif application.status == 'rejected' %}
+                                    <span class="bg-red-500 text-red-100 py-1 px-3 rounded-full text-sm xs-text-xs font-medium w-fit">Rejected</span>
+                                {% endif %}
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+                                <div class="flex items-center gap-2 text-sm xs-text-xs">
+                                    <i class="fa-solid fa-building text-yellow-300"></i>
+                                    <span>{{ application.job.company_name }}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm xs-text-xs">
+                                    <i class="fa-solid fa-location-dot text-yellow-300"></i>
+                                    <span>{{ application.job.location }}</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-sm xs-text-xs">
+                                    <i class="fa-solid fa-calendar text-yellow-300"></i>
+                                    <span>Applied: {{ application.date_applied|date:"M d, Y" }}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="glass-effect px-3 py-1 rounded-full text-sm xs-text-xs">{{ application.job.category.name }}</span>
+                                <span class="glass-effect px-3 py-1 rounded-full text-sm xs-text-xs">${{ application.job.min_price|default:'' }} - ${{application.job.max_price}}/hr</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-row lg:flex-col gap-3 justify-end">
+                            <a href="" class="glass-effect py-2 px-4 rounded-full text-sm xs-text-xs hover:bg-white hover:text-indigo-700 transition-all duration-300 text-center">
+                                View Job
+                            </a>
+                            <a href="#" class="glass-effect py-2 px-4 rounded-full text-sm xs-text-xs hover:bg-white hover:text-indigo-700 transition-all duration-300 text-center">
+                                View Application
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            
+        {% else %}
+            <div class="glass-effect py-12 px-4 rounded-lg text-center">
+                <i class="fa-solid fa-file-circle-xmark text-5xl text-yellow-300 mb-4"></i>
+                <h3 class="text-xl xs-text-lg font-bold mb-2">No Applications Yet</h3>
+                <p class="mb-4">You haven't applied to any jobs yet. Start your job search today!</p>
+                <a href="{% url 'job:avialable-jobs' %}" class="glass-effect py-3 px-6 rounded-full hover:bg-white hover:text-indigo-700 transition-all duration-300 inline-flex items-center gap-2">
+                    <i class="fa-solid fa-briefcase"></i> Browse Jobs
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    select option {
+        background-color: rgb(31, 41, 55);
+        color: white;
+        padding: 8px;
+    }
+    
+    select:focus {
+        outline: none;
+        border-color: rgba(234, 179, 8, 0.5);
+    }
+</style>
+{% endblock content %}

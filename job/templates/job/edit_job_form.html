@@ -9,9 +9,9 @@
             <div class="p-6 xs-p-4 border-b border-gray-700">
                 <h1 class="text-2xl xs-text-xl font-bold mb-2 text-shadow flex items-center gap-2">
                     <i class="fa-solid fa-plus-circle text-yellow-300"></i>
-                    Create New Job
+                    Edit Job Form
                 </h1>
-                <p class="text-gray-300 text-sm">Fill out the form below to post your job opportunity</p>
+                <p class="text-gray-300 text-sm">Update the form below to update job form</p>
             </div>
             
             <!-- Form -->
@@ -128,14 +128,14 @@
                             </label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="relative">
-                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white z-20">$</span>
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-20">$</span>
                                     <input type="number" name="{{ form.min_price.name }}" id="{{ form.min_price.id_for_label }}"
                                            class="glass-effect w-full py-2 pl-8 pr-16 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 bg-opacity-50"
                                            value="{{ form.min_price.value|default:'' }}">
                                     <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Min</span>
                                 </div>
                                 <div class="relative">
-                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-white z-10">$</span>
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 z-10">$</span>
                                     <input type="number" name="{{ form.max_price.name }}" id="{{ form.max_price.id_for_label }}"
                                            class="glass-effect w-full py-2 pl-8 pr-16 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 bg-opacity-50"
                                            value="{{ form.max_price.value|default:'' }}">
@@ -170,7 +170,7 @@
                     <!-- Submit Button -->
                     <div class="pt-6">
                         <button type="submit" class="w-full glass-effect py-3 px-4 rounded-full font-bold hover:bg-white hover:text-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 hover-scale">
-                            <i class="fa-solid fa-paper-plane"></i> Create Job
+                            <i class="fa-solid fa-paper-plane"></i> Update Job
                         </button>
                         <p class="mt-2 text-xs text-center text-gray-400">
                             <span class="text-yellow-300">*</span> Required fields

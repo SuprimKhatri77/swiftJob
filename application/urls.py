@@ -11,4 +11,5 @@ urlpatterns = [
     path('application-detail/<int:id>/',views.view_application_details,name='application-detail'),
     path('application/accpet/<int:id>/',views.accept_application,name='accept-application'),
     path('application/reject/<int:id>/',views.reject_application,name='reject-application'),
+    path('recent-applications-all/',views.recent_applications,name='recent-applications-all')
 ]

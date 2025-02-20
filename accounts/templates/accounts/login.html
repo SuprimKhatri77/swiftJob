@@ -15,6 +15,17 @@
         </p>
     </div>
 
+    {% comment %} <!-- Messages Section -->
+    {% if messages %}
+        <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}bg-red-500{% else %}bg-green-500{% endif %} text-white p-4 rounded-md mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %} {% endcomment %}
+
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white/10 backdrop-blur-lg shadow-lg rounded-lg py-8 px-6 sm:px-10">
             <form class="space-y-6" method="post">
@@ -26,11 +37,14 @@
                         Username
                     </label>
                     <div class="mt-1">
-                        <input type="text" placeholder="Enter username" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
+                        <input type="text" 
+                               placeholder="Enter username" 
+                               name="{{ form.username.name }}" 
+                               id="{{ form.username.id_for_label }}"
                                class="w-full px-4 py-2 border border-gray-500 rounded-md bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     </div>
                     {% if form.username.errors %}
-                        <p class="mt-2 text-sm text-red-400">{{ form.username.errors.0 }}</p>
+                        <p class="mt-2 text-sm text-red-600">{{ form.username.errors.0 }}</p>
                     {% endif %}
                 </div>
 
@@ -40,7 +54,10 @@
                         Password
                     </label>
                     <div class="mt-1">
-                        <input type="password" placeholder="Enter password" name="{{ form.password.html_name }}" id="{{ form.password.id_for_label }}"
+                        <input type="password" 
+                               placeholder="Enter password" 
+                               name="{{ form.password.name }}" 
+                               id="{{ form.password.id_for_label }}"
                                class="w-full px-4 py-2 border border-gray-500 rounded-md bg-white/20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     </div>
                     {% if form.password.errors %}
@@ -48,10 +65,21 @@
                     {% endif %}
                 </div>
 
+                <!-- Form-wide errors -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-500/20 border border-red-500 rounded-md p-3">
+                        {% for error in form.non_field_errors %}
+                            <p class="text-sm text-red-400">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <!-- Remember me -->
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <input id="remember_me" name="remember_me" type="checkbox"
+                        <input id="remember_me" 
+                               name="remember_me" 
+                               type="checkbox"
                                class="h-4 w-4 text-indigo-400 focus:ring-indigo-500 border-gray-300 rounded bg-gray-700">
                         <label for="remember_me" class="ml-2 text-sm text-white">
                             Remember me
@@ -61,7 +89,8 @@
 
                 <!-- Sign-in Button -->
                 <div>
-                    <button type="submit" class="w-full py-2 px-4 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all">
+                    <button type="submit" 
+                            class="w-full py-2 px-4 text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition-all">
                         Sign in
                     </button>
                 </div>

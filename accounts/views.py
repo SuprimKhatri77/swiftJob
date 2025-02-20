@@ -30,8 +30,8 @@ def register_view(request):
         form = RegistrationForm()
     return render(request,'accounts/register.html',{'form':form})
 
-@csrf_exempt
 def login_view(request):
+    print(request.POST)
     if request.method == 'POST':
         form = LoginForm(request,data=request.POST)
         if form.is_valid():
@@ -44,6 +44,7 @@ def login_view(request):
             elif user_profile.role == 'job_creator':
                 return redirect('job:job-creator')
         else:
+            print(form.errors)
             messages.error(request,'Error Logging in, Please Try again!')
 
     else:

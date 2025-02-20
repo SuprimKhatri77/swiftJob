@@ -93,12 +93,12 @@
                             </span>
                         </div>
                         <div class="flex gap-2">
-                            <a href="" class="glass-effect p-2 rounded-lg hover:bg-white hover:text-indigo-700 transition-all duration-300">
+                            <a href="{% url "job:edit-job-form" job.id %}" class="glass-effect p-2 rounded-lg hover:bg-white hover:text-indigo-700 transition-all duration-300">
                                 <i class="fa-solid fa-edit"></i>
                             </a>
-                            <button class="glass-effect p-2 rounded-lg hover:bg-red-500 transition-all duration-300">
+                            <a href="{% url "job:delete-job-form" job.id %}" class="glass-effect p-2 rounded-lg hover:bg-red-500 transition-all duration-300">
                                 <i class="fa-solid fa-trash"></i>
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -180,8 +180,7 @@
                         <td class="py-4">
                             {% if application.status == 'in_progress' %}
                                 <span class="bg-yellow-500 bg-opacity-20 text-yellow-300 text-sm px-3 py-1 rounded-full">Pending</span>
-                            {% elif application.status == 'reviewing' %}
-                                <span class="bg-blue-500 bg-opacity-20 text-blue-300 text-sm px-3 py-1 rounded-full">Reviewing</span>
+                           
                             {% elif application.status == 'accepted' %}
                                 <span class="bg-green-500 bg-opacity-20 text-green-300 text-sm px-3 py-1 rounded-full">Accepted</span>
                             {% elif application.status == 'rejected' %}
@@ -193,12 +192,15 @@
                                 <a href="{% url "application:application-detail" application.id %}" class="glass-effect p-2 rounded-lg hover:bg-white hover:text-indigo-700 transition-all duration-300">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
+                                {% if application.status == 'accepted' or  application.status == 'rejected' %}
+                                {% else %}
                                 <button class="glass-effect p-2 rounded-lg hover:bg-green-500 transition-all duration-300">
                                     <i class="fa-solid fa-check"></i>
                                 </button>
                                 <button class="glass-effect p-2 rounded-lg hover:bg-red-500 transition-all duration-300">
                                     <i class="fa-solid fa-times"></i>
                                 </button>
+                                {% endif %}
                             </div>
                         </td>
                     </tr>
