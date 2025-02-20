@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-%x#srnjrwbiwb&_hx94r8o(!s$+p0rmo$o!ld=$ae&)@b8-ygd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['swiftjob.onrender.com','localhost','127.0.0.1']
 
 
 # Application definition
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
