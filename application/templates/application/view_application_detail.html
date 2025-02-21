@@ -24,9 +24,19 @@
                         <h2 class="text-2xl font-semibold text-white">Application for {{ application.job.job_title }}</h2>
                         <p class="text-indigo-200 mt-2">Submitted on {{ application.date_applied|date:"F d, Y" }}</p>
                     </div>
+                    {% if application.status == 'accepted' %}
+                    <div class="inline-flex px-4 py-2 rounded-full text-sm font-medium bg-green-500 bg-opacity-20 text-green-300">
+                        Accepted
+                    </div>
+                    {% elif application.status == 'rejected' %}
+                    <div class="inline-flex px-4 py-2 rounded-full text-sm font-medium bg-yellow-400/20 text-red-500 border border-yellow-400/30">
+                        Rejected
+                    </div>
+                    {% else %}
                     <div class="inline-flex px-4 py-2 rounded-full text-sm font-medium bg-yellow-400/20 text-yellow-300 border border-yellow-400/30">
                         Under Review
                     </div>
+                    {% endif %}
                 </div>
             </div>
             
@@ -99,31 +109,33 @@
             </div>
             
             <!-- Action Buttons -->
-            <div class="p-6 backdrop-blur-md bg-white/5 flex flex-col sm:flex-row sm:justify-end gap-3">
-                {% for application in applications  %}
-                <form action="{% url "application:reject-application" application.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" 
-                            class="inline-flex justify-center items-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-red-500/25">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Reject
-                    </button>
-                </form>
-               
-                <form action="{% url "application:accept-application" application.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" 
-                            class="inline-flex justify-center items-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-green-500/25">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                        Approve
-                    </button>
-                </form>
-                {% endfor %}
-            </div>
+             {% if not application.status == 'accepted' or application.status == 'rejected' %}
+             <div class="p-6 backdrop-blur-md bg-white/5 flex flex-col sm:flex-row sm:justify-end gap-3">
+                 {% for application in applications  %}
+                 <form action="{% url "application:reject-application" application.id %}" method="post">
+                     {% csrf_token %}
+                     <button type="submit" 
+                             class="inline-flex justify-center items-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-red-500/25">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                         </svg>
+                         Reject
+                     </button>
+                 </form>
+                
+                 <form action="{% url "application:accept-application" application.id %}" method="post">
+                     {% csrf_token %}
+                     <button type="submit" 
+                             class="inline-flex justify-center items-center px-6 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-green-500/25">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                         </svg>
+                         Approve
+                     </button>
+                 </form>
+                 {% endfor %}
+             </div>
+             {% endif %}
         </div>
     </div>
 </div>

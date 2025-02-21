@@ -52,7 +52,7 @@ def view_application_details(request,id):
         return redirect('/')
     context = {
         'application': application,
-        'applications':applications
+        'applications':applications,
     }
     return render(request,'application/view_application_detail.html',context)
 
